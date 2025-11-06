@@ -1,13 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import "@/app/app.css";
-import { Amplify } from "aws-amplify";
-import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
 import { uploadData, getUrl, list, remove } from "aws-amplify/storage";
 import Image from "next/image";
-
-Amplify.configure(outputs);
 
 interface ImageItem {
   path: string;
