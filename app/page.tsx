@@ -1,7 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { generateClient } from "aws-amplify/data";
-import type { Schema } from "@/amplify/data/resource";
 import "@/app/app.css";
 import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
@@ -10,7 +8,6 @@ import { uploadData, getUrl, list, remove } from "aws-amplify/storage";
 import Image from "next/image";
 
 Amplify.configure(outputs);
-const client = generateClient<Schema>();
 
 interface ImageItem {
   path: string;
@@ -20,17 +17,10 @@ interface ImageItem {
 }
 
 export default function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
   const [images, setImages] = useState<ImageItem[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [loadingImages, setLoadingImages] = useState(false);
-
-  function listTodos() {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
-  }
 
   async function loadImages() {
     try {
@@ -98,15 +88,8 @@ export default function App() {
   }
 
   useEffect(() => {
-    listTodos();
     loadImages();
   }, []);
-
-  function createTodo() {
-    client.models.Todo.create({
-      content: window.prompt("Todo content"),
-    });
-  }
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -170,17 +153,6 @@ export default function App() {
 
   return (
     <main className="container">
-      {/* Todo 섹션 */}
-      <section className="todo-section">
-        <h1>My todos</h1>
-        <button onClick={createTodo}>+ new</button>
-        <ul>
-          {todos.map((todo) => (
-            <li key={todo.id}>{todo.content}</li>
-          ))}
-        </ul>
-      </section>
-
       {/* 이미지 업로드 섹션 */}
       <section className="image-section">
         <h1>📸 이미지 갤러리</h1>
